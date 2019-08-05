@@ -18,6 +18,12 @@
         <tr><td>Gender</td><td th:text="${employee.gender}"></td></tr>
         <tr><td>Birthday</td><td th:text="${employee.birthDate}"></td></tr>
         <tr><td>Hire date</td><td th:text="${employee.hireDate}"></td></tr>
+        <tr th:if="!${#lists.isEmpty(employee.titles)}"><td>Title list</td>
+            <td>
+                <ul th:each="t : ${employee.titles}">
+                    <span th:text="${t.title} + ' ' + '(From: ' + ${t.fromDate} + '   to: ' + ${t.toDate} + ')'"></span>
+                </ul>
+        </td></td></tr>
     </tr>
 </table>
 </div>

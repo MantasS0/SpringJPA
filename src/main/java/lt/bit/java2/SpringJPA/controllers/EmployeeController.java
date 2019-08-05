@@ -21,11 +21,12 @@ class EmployeeController {
     @Autowired
     EmployeeRepository employeeRepository;
 
+
     @GetMapping("/{id}")
     public String getEmployee(@PathVariable int id, ModelMap map) {
         try{
         Employee employee = employeeRepository.getOne(id);
-        map.addAttribute("employee", employee);
+            map.addAttribute("employee", employee);
         return "employee";}
         catch (EntityNotFoundException e){
             map.addAttribute("id", id);

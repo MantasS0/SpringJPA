@@ -4,11 +4,20 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "employees")
+@NamedEntityGraph(
+        name = Employee.Graph_Titles,
+        attributeNodes = {
+                @NamedAttributeNode("titles")
+        }
+)
 @Data
 public class Employee {
+
+    public static final String Graph_Titles = "graph.Employee.titles";
 
     @Id
     @Column(name = "emp_no")
@@ -29,5 +38,11 @@ public class Employee {
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "employee",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            orphanRemoval = true)
+    private List<Title> titles;
 
 }
