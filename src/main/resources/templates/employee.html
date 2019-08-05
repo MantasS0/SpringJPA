@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Employee</h1>
+
+<table class="table">
+    <tr>
+        <tr><td>Emp No</td><td th:text="${employee.empNo}"></td></tr>
+        <tr><td>First name</td><td th:text="${employee.firstName}"></td></tr>
+        <tr><td>Last name</td><td th:text="${employee.lastName}"></td></tr>
+        <tr><td>Gender</td><td th:text="${employee.gender}"></td></tr>
+        <tr><td>Birthday</td><td th:text="${employee.birthDate}"></td></tr>
+        <tr><td>Hire date</td><td th:text="${employee.hireDate}"></td></tr>
+    </tr>
+</table>
+</div>
+</body>
+</html>
