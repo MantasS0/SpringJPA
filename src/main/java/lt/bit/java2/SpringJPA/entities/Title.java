@@ -1,6 +1,7 @@
 package lt.bit.java2.SpringJPA.entities;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,9 +22,11 @@ public class Title {
 
     @Id
     @Column(name = "from_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fromDate;
 
     @Column(name = "to_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate toDate;
 
 

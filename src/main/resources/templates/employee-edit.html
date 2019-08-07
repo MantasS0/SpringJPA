@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Employee</h1>
+
+    <!--<table class="table">-->
+    <!--<tr>-->
+    <!--<tr>-->
+    <!--<td>Emp No</td>-->
+    <!--<td th:text="${employee.empNo}"></td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<td>First name</td>-->
+    <!--<td th:text="${employee.firstName}"></td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<td>Last name</td>-->
+    <!--<td th:text="${employee.lastName}"></td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<td>Gender</td>-->
+    <!--<td th:text="${employee.gender}"></td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<td>Birthday</td>-->
+    <!--<td th:text="${employee.birthDate}"></td>-->
+    <!--</tr>-->
+    <!--<tr>-->
+    <!--<td>Hire date</td>-->
+    <!--<td th:text="${employee.hireDate}"></td>-->
+    <!--</tr>-->
+    <!--<tr th:if="!${#lists.isEmpty(employee.titles)}">-->
+    <!--<td>Title list</td>-->
+    <!--<td>-->
+    <!--<ul th:each="t : ${employee.titles}">-->
+    <!--<li><span-->
+    <!--th:text="${t.title} + ' ' + '(From: ' + ${t.fromDate} + '   to: ' + ${t.toDate} + ')'"></span>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--</td>-->
+    <!--</td></tr>-->
+    <!--</tr>-->
+    <!--</table>-->
+
+    <form action="#" th:action="@{/employee/{id}/update (id=${employee.empNo})}" th:object="${employee}" method="post">
+        <div class="form-group row">
+            <label for="empNo" class="col-sm-2 col-form-label">Emp No</label>
+            <div class="col-sm-10">
+                <input type="number" readonly class="form-control-plaintext" th:field="*{empNo}" id="empNo"
+                       th:value="*{empNo}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="firstName" class="col-sm-2 col-form-label">First name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" th:field="*{firstName}" id="firstName"
+                       th:value="*{firstName}">
+                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="lastName" class="col-sm-2 col-form-label">Last name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" th:field="*{lastName}" id="lastName"
+                       th:value="*{lastName}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Gender</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                       th:field="*{gender}" id="male" value="M">
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                       th:field="*{gender}" id="female" value="F">
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="birthDate" class="col-sm-2 col-form-label">Birth date</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" th:field="*{birthDate}" id="birthDate">
+            </div>
+            <!--${#dates.format(sprint.releaseDate, 'dd-MMM-yyyy')}-->
+        </div>
+        <div class="form-group row">
+            <label for="hireDate" class="col-sm-2 col-form-label">Hire date</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" th:field="*{hireDate}" id="hireDate">
+            </div>
+        </div>
+        <div class="form-group row" th:if="!${#lists.isEmpty(employee.titles)}">
+            <label class="col-sm-2 col-form-label">Title list</label>
+            <div class="col-sm-10">
+                <ul th:each="t : *{titles}">
+                    <div class="form-group row">
+                        <label for="title" class="col-sm-2 col-form-label">Title</label>
+                        <input type="text" class="form-control" id="title" th:value="${t.title}">
+                        <label for="fromDate" class="col-sm-2 col-form-label">From:</label>
+                        <input type="date" class="form-control" id="fromDate" th:value="${t.fromDate}">
+                        <label for="toDate" class="col-sm-2 col-form-label">To:</label>
+                        <input type="date" class="form-control" id="toDate" th:value="${t.toDate}">
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <input type="submit" class="btn btn-primary mb-2" value="Save changes">
+    </form>
+
+</div>
+</body>
+</html>

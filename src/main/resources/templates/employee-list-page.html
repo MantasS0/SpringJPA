@@ -74,6 +74,8 @@
             <td><a th:href="@{'/employee/' + ${employee.empNo}}" th:text="${employee.empNo}"></a></td>
             <td th:text="${employee.firstName}"></td>
             <td th:text="${employee.lastName}"></td>
+            <td><a th:href="@{'/employee/' + ${employee.empNo} + '/edit/'}">Edit</a></td>
+            <td><a th:href="@{'/employee/' + ${employee.empNo} + '/delete/'}">Delete</a></td>
         </tr>
         </tbody>
     </table>

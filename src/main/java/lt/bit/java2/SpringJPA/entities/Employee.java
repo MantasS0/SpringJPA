@@ -1,6 +1,7 @@
 package lt.bit.java2.SpringJPA.entities;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -34,15 +35,18 @@ public class Employee {
     private Gender gender;
 
     @Column(name = "hire_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate hireDate;
 
     @Column(name = "birth_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     @OneToMany(mappedBy = "employee",
             fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST,
-            orphanRemoval = true)
+            orphanRemoval = true
+    )
     private List<Title> titles;
 
 }

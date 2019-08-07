@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/employee")
@@ -32,6 +32,30 @@ class EmployeeController {
             map.addAttribute("id", id);
             return "employee-error";
         }
+    }
+
+    @GetMapping("/{id}/edit")
+    public String getEmployeeEdit(@PathVariable int id, ModelMap map){
+        try{
+            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+            map.addAttribute("employee", employee);
+            return "employee-edit";}
+        catch (EntityNotFoundException e){
+            map.addAttribute("id", id);
+            return "employee-error";
+        }
+    }
+
+    @PostMapping("/{id}/update")
+    public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, Model map){
+        if (result.hasErrors()){
+            employee.setEmpNo(id);
+            return "employee-edit";
+        }
+//        employee.setEmpNo(id);
+
+        employeeRepository.save(employee);
+        return "employee-list-page";
     }
 
     @GetMapping

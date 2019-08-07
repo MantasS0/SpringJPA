@@ -21,7 +21,7 @@
         <tr th:if="!${#lists.isEmpty(employee.titles)}"><td>Title list</td>
             <td>
                 <ul th:each="t : ${employee.titles}">
-                    <span th:text="${t.title} + ' ' + '(From: ' + ${t.fromDate} + '   to: ' + ${t.toDate} + ')'"></span>
+                    <li><span th:text="${t.title} + ' ' + '(From: ' + ${t.fromDate} + '   to: ' + ${t.toDate} + ')'"></span></li>
                 </ul>
         </td></td></tr>
     </tr>
