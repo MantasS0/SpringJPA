@@ -1,18 +1,20 @@
 package lt.bit.java2.SpringJPA.controllers;
 
 import lt.bit.java2.SpringJPA.entities.Employee;
+import lt.bit.java2.SpringJPA.entities.Title;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/employee")
@@ -47,15 +49,17 @@ class EmployeeController {
     }
 
     @PostMapping("/{id}/update")
-    public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, Model map){
+    public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, ModelMap map){
         if (result.hasErrors()){
             employee.setEmpNo(id);
             return "employee-edit";
         }
-//        employee.setEmpNo(id);
-
+        List<Title> titleList = new ArrayList<>(employee.getTitles());
+        employee.getTitles().clear();
+        employee.getTitles().addAll(titleList);
         employeeRepository.save(employee);
-        return "employee-list-page";
+        map.addAttribute("employee", employee);
+        return "employee";
     }
 
     @GetMapping
