@@ -55,6 +55,10 @@ class EmployeeController {
             return "employee-edit";
         }
         List<Title> titleList = new ArrayList<>(employee.getTitles());
+        /**
+         * titleList comes with employee set as null, because there is a stackOverflowException thrown (since it goes into infinite loop)
+         */
+        titleList.forEach(t->t.setEmployee(employee));
         employee.getTitles().clear();
         employee.getTitles().addAll(titleList);
         employeeRepository.save(employee);

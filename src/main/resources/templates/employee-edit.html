@@ -101,14 +101,17 @@
         <div class="form-group row" th:if="!${#lists.isEmpty(employee.titles)}">
             <label class="col-sm-2 col-form-label">Title list</label>
             <div class="col-sm-10">
-                <ul th:each="t : *{titles}">
+                <ul th:each="t, itemStat : *{titles}">
                     <div class="form-group row">
                         <label for="title" class="col-sm-2 col-form-label">Title</label>
-                        <input type="text" class="form-control" id="title" th:value="${t.title}">
+                        <!--<input type="text" class="form-control" id="title" th:value="${t.title}">-->
+                        <input type="text" class="form-control" id="title" th:field="*{titles[__${itemStat.index}__].title}">
                         <label for="fromDate" class="col-sm-2 col-form-label">From:</label>
-                        <input type="date" class="form-control" id="fromDate" th:value="${t.fromDate}">
+                        <input type="date" class="form-control" id="fromDate" th:field="*{titles[__${itemStat.index}__].fromDate}">
+                        <!--<input type="date" class="form-control" id="fromDate" th:value="${t.fromDate}">-->
                         <label for="toDate" class="col-sm-2 col-form-label">To:</label>
-                        <input type="date" class="form-control" id="toDate" th:value="${t.toDate}">
+                        <input type="date" class="form-control" id="toDate" th:field="*{titles[__${itemStat.index}__].toDate}">
+                        <!--<input type="date" class="form-control" id="toDate" th:value="${t.toDate}">-->
                     </div>
                 </ul>
             </div>
