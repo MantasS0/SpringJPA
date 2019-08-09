@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -26,31 +28,80 @@ class EmployeeController {
 
     @GetMapping("/{id}")
     public String getEmployee(@PathVariable int id, ModelMap map) {
-        try{
-        Employee employee = employeeRepository.getOne(id);
+        try {
+            Employee employee = employeeRepository.getOne(id);
             map.addAttribute("employee", employee);
-        return "employee";}
-        catch (EntityNotFoundException e){
+            return "employee";
+        } catch (EntityNotFoundException e) {
+            String intent = "Find";
+            map.addAttribute("intent", intent);
+            map.addAttribute("exception", e);
             map.addAttribute("id", id);
             return "employee-error";
         }
     }
 
+    @GetMapping("/add-form")
+    public String addEmployeeForm(Employee employee){
+        return "employee-add";
+    }
+
+    @PostMapping("/add")
+    public String addEmployee(@Valid Employee employee, BindingResult result, ModelMap map){
+        if (result.hasErrors()){
+            return "employee-add";
+        }
+
+        Title title = new Title();
+        title.setTitle(employee.getTitles().get(0).getTitle());
+        title.setFromDate(employee.getHireDate());
+        title.setToDate(LocalDate.of(9999,1,1));
+        title.setEmployee(employee);
+
+        employee.getTitles().clear();
+
+        employee.getTitles().add(title);
+
+        employeeRepository.save(employee);
+        return "redirect:/employee";
+    }
+
+/*
+    @GetMapping("/signup")
+    public String showSignUpForm(User user) {
+        return "add-user";
+    }
+
+    @PostMapping("/adduser")
+    public String addUser(@Valid User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "add-user";
+        }
+
+        userRepository.save(user);
+        model.addAttribute("users", userRepository.findAll());
+        return "index";
+    }
+*/
+
     @GetMapping("/{id}/edit")
-    public String getEmployeeEdit(@PathVariable int id, ModelMap map){
-        try{
+    public String getEmployeeEdit(@PathVariable int id, ModelMap map) {
+        try {
             Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
             map.addAttribute("employee", employee);
-            return "employee-edit";}
-        catch (EntityNotFoundException e){
+            return "employee-edit";
+        } catch (EntityNotFoundException e) {
+            String intent = "Edit";
+            map.addAttribute("intent", intent);
+            map.addAttribute("exception", e);
             map.addAttribute("id", id);
             return "employee-error";
         }
     }
 
     @PostMapping("/{id}/update")
-    public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, ModelMap map){
-        if (result.hasErrors()){
+    public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, ModelMap map) {
+        if (result.hasErrors()) {
             employee.setEmpNo(id);
             return "employee-edit";
         }
@@ -58,26 +109,49 @@ class EmployeeController {
         /**
          * titleList comes with employee set as null, because there is a stackOverflowException thrown (since it goes into infinite loop)
          */
-        titleList.forEach(t->t.setEmployee(employee));
+        titleList.forEach(t -> t.setEmployee(employee));
         employee.getTitles().clear();
         employee.getTitles().addAll(titleList);
         employeeRepository.save(employee);
-        map.addAttribute("employee", employee);
-        return "employee";
+//        map.addAttribute("employee", employee);
+        return "redirect:/employee";
     }
+
+    @GetMapping("/{id}/delete")
+    public String deleteEmployee(@PathVariable("id") int id, ModelMap map) {
+        try {
+            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+            employeeRepository.delete(employee);
+        } catch (Exception e) {
+            String intent = "Delete";
+            map.addAttribute("intent", intent);
+            map.addAttribute("id", id);
+            map.addAttribute("exception", e);
+            return "employee-error";
+        }
+        return "redirect:/employee";
+    }
+
+
 
     @GetMapping
     public String getEmployeeSinglePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "10") int pageSize,
-            ModelMap map){
+            ModelMap map) {
         Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
         map.addAttribute("result", result);
 
+        HashMap<String, Integer> pageRange = getPaginationRange(pageNumber, result.getTotalPages());
+        map.addAttribute("rangeFrom", pageRange.get("from"));
+        map.addAttribute("rangeTo", pageRange.get("to"));
+        return "employee-list-page";
+    }
+
+    private HashMap<String, Integer> getPaginationRange(int pageNumber, int pageCount) {
+        HashMap<String, Integer> pageRange = new HashMap<>();
         int rangeFrom;
         int rangeTo;
-        int pageCount = result.getTotalPages();
-
         if (pageNumber == 1) {
             rangeFrom = 1;
             rangeTo = 5;
@@ -100,11 +174,9 @@ class EmployeeController {
             rangeFrom = pageNumber - 2;
             rangeTo = pageNumber + 2;
         }
-
-        map.addAttribute("rangeFrom",rangeFrom);
-        map.addAttribute("rangeTo",rangeTo);
-
-        return "employee-list-page";
+        pageRange.put("from", rangeFrom);
+        pageRange.put("to", rangeTo);
+        return pageRange;
     }
 
 }

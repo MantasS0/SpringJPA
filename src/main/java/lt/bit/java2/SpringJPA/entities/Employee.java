@@ -22,6 +22,7 @@ public class Employee {
 
     @Id
     @Column(name = "emp_no")
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer empNo;
 
     @Column(name = "first_name")

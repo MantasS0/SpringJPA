@@ -8,21 +8,22 @@
 </head>
 <body>
 <div class="container">
-    <h1>Edit Employee</h1>
+    <h1>Add New Employee</h1>
 
-    <form action="#" th:action="@{/employee/{id}/update (id=${employee.empNo})}" th:object="${employee}" method="post">
+    <form action="#" th:action="@{/employee/add}" th:object="${employee}" method="post">
         <div class="form-group row">
             <label for="empNo" class="col-sm-2 col-form-label">Emp No</label>
             <div class="col-sm-10">
-                <input type="number" readonly class="form-control-plaintext" th:field="*{empNo}" id="empNo"
-                       th:value="*{empNo}">
+                <input type="number" class="form-control" th:field="*{empNo}" id="empNo"
+                       placeholder="Employee number">
             </div>
+            <span th:if="${#fields.hasErrors('empNo')}" th:errors="*{empNo}"></span>
         </div>
         <div class="form-group row">
             <label for="firstName" class="col-sm-2 col-form-label">First name</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" th:field="*{firstName}" id="firstName"
-                       th:value="*{firstName}">
+                       placeholder="First name">
                 <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
             </div>
         </div>
@@ -30,17 +31,20 @@
             <label for="lastName" class="col-sm-2 col-form-label">Last name</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" th:field="*{lastName}" id="lastName"
-                       th:value="*{lastName}">
+                       placeholder="Last name}">
+                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Gender</label>
             <div class="form-check form-check-inline">
+                <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></span>
                 <input class="form-check-input" type="radio" name="inlineRadioOptions"
                        th:field="*{gender}" id="male" value="M">
                 <label class="form-check-label" for="male">Male</label>
             </div>
             <div class="form-check form-check-inline">
+                <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></span>
                 <input class="form-check-input" type="radio" name="inlineRadioOptions"
                        th:field="*{gender}" id="female" value="F">
                 <label class="form-check-label" for="female">Female</label>
@@ -49,31 +53,40 @@
         <div class="form-group row">
             <label for="birthDate" class="col-sm-2 col-form-label">Birth date</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" th:field="*{birthDate}" id="birthDate">
+                <input type="date" class="form-control" th:field="*{birthDate}" id="birthDate" placeholder="2000/12/31">
+                <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></span>
             </div>
         </div>
         <div class="form-group row">
             <label for="hireDate" class="col-sm-2 col-form-label">Hire date</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" th:field="*{hireDate}" id="hireDate">
+                <input type="date" class="form-control" th:field="*{hireDate}" id="hireDate" placeholder="2018/12/31">
+                <span th:if="${#fields.hasErrors('hireDate')}" th:errors="*{hireDate}"></span>
             </div>
         </div>
-        <div class="form-group row" th:if="!${#lists.isEmpty(employee.titles)}">
-            <label class="col-sm-2 col-form-label">Title list</label>
+        <div class="form-group row">
+            <label for="title" class="col-sm-2 col-form-label">Title</label>
             <div class="col-sm-10">
-                <ul th:each="t, itemStat : *{titles}">
-                    <div class="form-group row">
-                        <label for="title" class="col-sm-2 col-form-label">Title</label>
-                        <input type="text" class="form-control" id="title" th:field="*{titles[__${itemStat.index}__].title}">
-                        <label for="fromDate" class="col-sm-2 col-form-label">From:</label>
-                        <input type="date" class="form-control" id="fromDate" th:field="*{titles[__${itemStat.index}__].fromDate}">
-                        <label for="toDate" class="col-sm-2 col-form-label">To:</label>
-                        <input type="date" class="form-control" id="toDate" th:field="*{titles[__${itemStat.index}__].toDate}">
-                    </div>
-                </ul>
+                <input type="text" class="form-control" th:field="*{titles[0].title}" id="title" placeholder="Job title">
+                <span th:if="${#fields.hasErrors('titles[0].title')}" th:errors="*{titles[0].title}"></span>
             </div>
         </div>
-        <input type="submit" class="btn btn-primary mb-2" value="Save changes">
+        <div class="form-group row">
+            <label for="fromDate" class="col-sm-2 col-form-label">From:</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" th:field="*{titles[0].fromDate}" id="fromDate" placeholder="2018/12/31">
+                <span th:if="${#fields.hasErrors('titles[0].fromDate')}" th:errors="*{titles[0].fromDate}"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="hireDate" class="col-sm-2 col-form-label">To:</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" th:field="*{titles[0].toDate}" id="toDate" placeholder="9999/01/01">
+                <span th:if="${#fields.hasErrors('titles[0].toDate')}" th:errors="*{titles[0].toDate}"></span>
+            </div>
+        </div>
+
+        <input type="submit" class="btn btn-primary mb-2" value="Add Employee">
     </form>
 
 </div>

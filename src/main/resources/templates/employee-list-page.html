@@ -10,6 +10,8 @@
 <div class="container">
     <h1 class="text-center">List of Employees</h1>
 
+    <button class="button"><a th:href="@{/employee/add-form}">Add New Employee</a></button>
+
     <nav aria-label="Search results pages" class="d-md-flex flex-wrap justify-content-center">
         <ul class="pagination"
             th:if="${result.totalPages > 1}">
