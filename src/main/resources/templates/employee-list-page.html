@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+
 <body>
 <div class="container">
     <h1 class="text-center">List of Employees</h1>
 
-    <button class="button"><a th:href="@{/employee/add-form}">Add New Employee</a></button>
+    <button class="button"><a class="text-dark" th:href="@{/employee/add-form}">Add New Employee</a></button>
 
     <nav aria-label="Search results pages" class="d-md-flex flex-wrap justify-content-center">
         <ul class="pagination"
@@ -57,18 +58,42 @@
                 <span class="page-link" th:if="${result.last}">Last →</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.totalPages})}">Last →</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}}">Last →</a>
             </li>
 
         </ul>
     </nav>
 
-    <table class="table">
+    <table class="table" id="employee-Table">
         <thead>
         <tr>
-            <th>Emp No</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('empNo')?.ascending} ? 'empNo,desc' : 'empNo,asc'))}"
+                   th:switch="${result?.sort?.getOrderFor('empNo')?.ascending}"
+                   class="text-dark">
+                    <span th:case="${false}">Emp No &#9650;</span>
+                    <span th:case="${true}">Emp No &#9660;</span>
+                    <span th:case="*">Emp No</span>
+                </a>
+            </th>
+            <th>
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('firstName')?.ascending} ? 'firstName,desc' : 'firstName,asc'))}"
+                   th:switch="${result?.sort?.getOrderFor('firstName')?.ascending}"
+                   class="text-dark">
+                    <span th:case="${false}">First Name &#9650;</span>
+                    <span th:case="${true}">First Name &#9660;</span>
+                    <span th:case="*">First Name</span>
+                </a>
+            </th>
+            <th>
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('lastName')?.ascending} ? 'lastName,desc' : 'lastName,asc'))}"
+                   th:switch="${result?.sort?.getOrderFor('lastName')?.ascending}"
+                   class="text-dark">
+                    <span th:case="${false}">Last Name &#9650;</span>
+                    <span th:case="${true}">Last Name &#9660;</span>
+                    <span th:case="*">Last Name</span>
+                </a>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -81,9 +106,6 @@
         </tr>
         </tbody>
     </table>
-
-
-
 
 
 </div>

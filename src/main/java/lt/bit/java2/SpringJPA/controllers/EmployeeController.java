@@ -6,6 +6,8 @@ import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -66,23 +68,6 @@ class EmployeeController {
         return "redirect:/employee";
     }
 
-/*
-    @GetMapping("/signup")
-    public String showSignUpForm(User user) {
-        return "add-user";
-    }
-
-    @PostMapping("/adduser")
-    public String addUser(@Valid User user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "add-user";
-        }
-
-        userRepository.save(user);
-        model.addAttribute("users", userRepository.findAll());
-        return "index";
-    }
-*/
 
     @GetMapping("/{id}/edit")
     public String getEmployeeEdit(@PathVariable int id, ModelMap map) {
@@ -113,7 +98,6 @@ class EmployeeController {
         employee.getTitles().clear();
         employee.getTitles().addAll(titleList);
         employeeRepository.save(employee);
-//        map.addAttribute("employee", employee);
         return "redirect:/employee";
     }
 
@@ -132,19 +116,21 @@ class EmployeeController {
         return "redirect:/employee";
     }
 
-
-
     @GetMapping
     public String getEmployeeSinglePage(
+//            @PageableDefault(size = 10, sort = "empNo") Pageable pageable,
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "10") int pageSize,
+            @SortDefault(sort="empNo",direction = Sort.Direction.ASC) Sort sort,
             ModelMap map) {
-        Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
+        Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize,sort));
+
         map.addAttribute("result", result);
 
         HashMap<String, Integer> pageRange = getPaginationRange(pageNumber, result.getTotalPages());
         map.addAttribute("rangeFrom", pageRange.get("from"));
         map.addAttribute("rangeTo", pageRange.get("to"));
+
         return "employee-list-page";
     }
 
