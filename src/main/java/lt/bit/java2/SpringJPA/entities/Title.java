@@ -1,5 +1,6 @@
 package lt.bit.java2.SpringJPA.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +15,8 @@ public class Title {
 
     @Id
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "emp_no", referencedColumnName = "emp_no")
+    @JoinColumn(name = "emp_no", referencedColumnName = "emp_no", updatable = false, insertable = false)
+    @JsonIgnore
     private Employee employee;
 
     @Id
