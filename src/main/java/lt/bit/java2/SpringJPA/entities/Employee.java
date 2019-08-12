@@ -45,7 +45,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     private List<Title> titles;

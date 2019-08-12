@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -17,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/employee")
@@ -106,9 +102,18 @@ class EmployeeController {
         /**
          * titleList comes with employee set as null, because there is a stackOverflowException thrown (since it goes into infinite loop)
          */
-        employee.getTitles().clear();
-        titleList.forEach(t -> t.setEmployee(employee));
+
+//        employee.getTitles().clear();
+        employee.setTitles(null);
+//        employee = employeeRepository.save(employee);
+        for(Title title : titleList){
+            title.setEmployee(employee);
+        }
+        employee.setTitles(new ArrayList<>());
         employee.getTitles().addAll(titleList);
+//        titleList.forEach(t -> t.setEmployee(employee));
+
+
         employeeRepository.save(employee);
         return "redirect:/employee";
     }
@@ -140,6 +145,7 @@ class EmployeeController {
         map.addAttribute("result", result);
         Sort.Order order = sort.iterator().next();
         map.addAttribute("sorting", order);
+//        order.getDirection().name()
 
         HashMap<String, Integer> pageRange = getPaginationRange(pageNumber, result.getTotalPages());
         map.addAttribute("rangeFrom", pageRange.get("from"));

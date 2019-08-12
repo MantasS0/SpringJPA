@@ -22,7 +22,7 @@
                 <span class="page-link" th:if="${result.first}">← First</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=1)}">← First</a>
+                   th:href="@{/employee(size=${result.size}, page=1, sort=${sorting?.property},${sorting?.direction})}">← First</a>
             </li>
 
             <li class="page-item"
@@ -30,7 +30,7 @@
                 <span class="page-link" th:if="${result.first}">«</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=${result.number})}">«</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.number}, sort=${sorting?.property},${sorting?.direction})}">«</a>
             </li>
 
             <li class="page-item"
@@ -41,7 +41,7 @@
                       th:text="${number}"></span>
                 <a class="page-link"
                    th:if="!${number == result.number + 1}"
-                   th:href="@{/employee(size=${result.size}, page=${number})}"
+                   th:href="@{/employee(size=${result.size}, page=${number}, sort=${sorting?.property},${#strings.toLowerCase(sorting?.direction)})}"
                    th:text="${number}"></a>
             </li>
 
@@ -58,7 +58,7 @@
                 <span class="page-link" th:if="${result.last}">Last →</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.totalPages})}">Last →</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property},${sorting?.direction})}">Last →</a>
             </li>
 
         </ul>
