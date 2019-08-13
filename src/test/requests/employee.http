@@ -11,37 +11,74 @@ Accept: application/json
 
 ###
 
+GET http://localhost:8080/api/employee/1
+Accept: application/json
+
+###
+
+POST http://localhost:8080/api/employee
+Content-Type: application/json
+Accept: application/json
+
+{
+  "empNo": 1,
+  "firstName": "A",
+  "lastName": "B",
+  "gender": "F",
+  "birthDate": "1990-01-31",
+  "hireDate": "2016-02-29",
+  "titles": [
+    {
+      "title": "Engineer",
+      "fromDate": "2016-01-01",
+      "toDate": "2016-02-29"
+    },
+    {
+      "title": "Senior Engineer",
+      "fromDate": "2016-02-29",
+      "toDate": "9999-01-01"
+    }
+  ]
+}
+
+###
+
+DELETE http://localhost:8080/api/employee/1
+Accept: application/json
+
+###
+
 PUT http://localhost:8080/api/employee
 Content-Type: application/json
 Accept: application/json
 
 {
   "empNo": 1,
-  "firstName": "Ben",
-  "lastName": "Romanovas",
+  "firstName": "Antanas",
+  "lastName": "Birutis",
   "gender": "M",
-  "hireDate": "1992-02-01",
-  "birthDate": "1992-02-01",
+  "birthDate": "1990-01-31",
+  "hireDate": "2016-02-29",
   "titles": [
     {
       "title": "Senior Engineer",
-      "fromDate": "1986-06-25",
-      "toDate": "2016-09-10"
+      "fromDate": "2016-02-29",
+      "toDate": "2016-03-10"
     },
     {
-      "title": "Master",
-      "fromDate": "2016-09-11",
-      "toDate": "2020-01-01"
+      "title": "Master Engineer",
+      "fromDate": "2016-03-15",
+      "toDate": "9999-01-01"
     },
     {
-      "title": "Master Master",
-      "fromDate": "2020-01-02",
+      "title": "Master Engineer 5",
+      "fromDate": "2016-03-25",
       "toDate": "9999-01-01"
     }
   ]
 }
-###
 
+###
 
 
 

@@ -1,13 +1,12 @@
 package lt.bit.java2.SpringJPA.controllers;
 
 import lt.bit.java2.SpringJPA.entities.Employee;
-import lt.bit.java2.SpringJPA.entities.Title;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -27,7 +26,7 @@ class EmployeeApi {
 
     @PostMapping
     public ResponseEntity<Employee> create(@RequestBody Employee employee) {
-        //TODO save in DB
+        employee.getTitles().forEach(t -> t.setEmployee(employee));
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeRepository.save(employee));
     }
 
@@ -87,7 +86,7 @@ class EmployeeApi {
             employee.getTitles().stream()
                     .filter(t1 -> t1.getFromDate().equals(title.getFromDate()) &&
                             t1.getTitle().equals(title.getTitle()) &&
-                            !Objects.equals(t1.getToDate(),title.getToDate()))
+                            !t1.getToDate().equals(title.getToDate()))
                     .findAny()
                     .ifPresent(t2 -> title.setToDate(t2.getToDate()));
         });
