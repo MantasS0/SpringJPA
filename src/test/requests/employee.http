@@ -10,3 +10,38 @@ GET http://localhost:8080/api/employee/10001
 Accept: application/json
 
 ###
+
+PUT http://localhost:8080/api/employee
+Content-Type: application/json
+Accept: application/json
+
+{
+  "empNo": 1,
+  "firstName": "Ben",
+  "lastName": "Romanovas",
+  "gender": "M",
+  "hireDate": "1992-02-01",
+  "birthDate": "1992-02-01",
+  "titles": [
+    {
+      "title": "Senior Engineer",
+      "fromDate": "1986-06-25",
+      "toDate": "2016-09-10"
+    },
+    {
+      "title": "Master",
+      "fromDate": "2016-09-11",
+      "toDate": "2020-01-01"
+    },
+    {
+      "title": "Master Master",
+      "fromDate": "2020-01-02",
+      "toDate": "9999-01-01"
+    }
+  ]
+}
+###
+
+
+
+
