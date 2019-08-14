@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/employee")
@@ -53,24 +54,15 @@ class EmployeeController {
             return "employee-add";
         }
 
-        Title title = employee.getTitles().get(0);
-        employee.setTitles(null);
-
-//        Title title = new Title();
-//        title.setTitle(employee.getTitles().get(0).getTitle());
-//        title.setFromDate(employee.getHireDate());
-//        title.setToDate(LocalDate.of(9999,1,1));
+//        Title title = employee.getTitles().get(0);
+//        employee.setTitles(null);
+//
+//        employee = employeeRepository.save(employee);
+//
 //        title.setEmployee(employee);
-//
-//        employee.getTitles().clear();
-//
+//        employee.setTitles(new ArrayList<>());
 //        employee.getTitles().add(title);
-
-        employee = employeeRepository.save(employee);
-
-        title.setEmployee(employee);
-        employee.setTitles(new ArrayList<>());
-        employee.getTitles().add(title);
+        employee.getTitles().forEach( t -> t.setEmployee(employee));
         employeeRepository.save(employee);
 
         return "redirect:/employee";
@@ -92,7 +84,7 @@ class EmployeeController {
         }
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public String updateEmployee(@PathVariable("id") int id, @Valid Employee employee, BindingResult result, ModelMap map) {
         if (result.hasErrors()) {
             employee.setEmpNo(id);
@@ -118,11 +110,16 @@ class EmployeeController {
         return "redirect:/employee";
     }
 
-    @GetMapping("/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public String deleteEmployee(@PathVariable("id") int id, ModelMap map) {
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-            employeeRepository.delete(employee);
+            Optional<Employee> employee = employeeRepository.findById(id);
+            if (employee.isPresent()){
+                employeeRepository.delete(employee.get());
+            }
+
+//            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+//            employeeRepository.delete(employee);
         } catch (Exception e) {
             String intent = "Delete";
             map.addAttribute("intent", intent);
