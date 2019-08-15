@@ -62,6 +62,12 @@
             </li>
 
         </ul>
+
+        <select id="pageSize" name="pageSize">
+            <option th:each="i : ${#numbers.sequence(10, 100, 15)}" th:value="${i}" th:text="${i}"
+                    th:selected="${i==pageSize}"
+            ></option>
+        </select>
     </nav>
 
     <table class="table" id="employee-Table">

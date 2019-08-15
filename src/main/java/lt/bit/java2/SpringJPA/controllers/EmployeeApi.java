@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequestMapping("/api/employee")
 class EmployeeApi {
 
-    final EmployeeRepository employeeRepository;
+    final private EmployeeRepository employeeRepository;
 
     public EmployeeApi(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;

@@ -10,7 +10,7 @@
 <div class="container">
     <h1>Edit Employee</h1>
 
-    <form action="#" th:action="@{/employee/{id}/update (id=${employee.empNo})}" th:object="${employee}" method="post">
+    <form action="#" th:action="@{/employee/{id}/update (id=${employee.empNo})}" th:object="${employee}" method="POST">
         <div class="form-group row">
             <label for="empNo" class="col-sm-2 col-form-label">Emp No</label>
             <div class="col-sm-10">
@@ -74,6 +74,7 @@
             </div>
         </div>
         <input type="submit" class="btn btn-primary mb-2" value="Save changes">
+        <input type="button" class="btn btn-primary mb-2" value="Back" onclick="history.back()">
     </form>
 
 </div>
