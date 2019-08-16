@@ -5,7 +5,7 @@
     <title>List of Employees</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="http://localhost:8080/SpringJpaApplication/js/script.js" defer></script>
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
                 <span class="page-link" th:if="${result.first}">← First</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=1, sort=${sorting?.property},${sorting?.direction})}">← First</a>
+                   th:href="@{/employee(size=${result.size}, page=1, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">← First</a>
             </li>
 
             <li class="page-item"
@@ -31,7 +31,7 @@
                 <span class="page-link" th:if="${result.first}">«</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=${result.number}, sort=${sorting?.property},${sorting?.direction})}">«</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">«</a>
             </li>
 
             <li class="page-item"
@@ -42,7 +42,7 @@
                       th:text="${number}"></span>
                 <a class="page-link"
                    th:if="!${number == result.number + 1}"
-                   th:href="@{/employee(size=${result.size}, page=${number}, sort=${sorting?.property},${#strings.toLowerCase(sorting?.direction)})}"
+                   th:href="@{/employee(size=${result.size}, page=${number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}"
                    th:text="${number}"></a>
             </li>
 
@@ -51,7 +51,7 @@
                 <span class="page-link" th:if="${result.last}">»</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.number + 2}, sort=${sorting?.property},${sorting?.direction})}">»</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.number + 2}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">»</a>
             </li>
 
             <li class="page-item"
@@ -59,15 +59,14 @@
                 <span class="page-link" th:if="${result.last}">Last →</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property},${sorting?.direction})}">Last →</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">Last →</a>
             </li>
-
+<!--            ${#strings.toString(${sorting?.property},${sorting?.direction})}-->
         </ul>
-
-        <form id="pageSizeForm" th:action="@{/employee}">
-            <select id="pageSize" name="pageSize" onchange="pageSizeChange()">
-                <option th:each="i : ${#numbers.sequence(10, 100, 15)}" th:value="${i}" th:text="${i}"
-                        th:selected="${i==result.size}"></option>
+        <form id="pageSizeForm" th:action="@{/employee}" th:with="options=${ {10,25,50,75,100} }">
+            <select id="pageSize" name="size" onchange="pageSizeChange()">
+                <option th:each="i : ${options}" th:value="${i}" th:text="${i}"
+                        th:selected="${i==result.size}" ></option>
             </select>
         </form>
     </nav>
