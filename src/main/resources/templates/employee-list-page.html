@@ -5,6 +5,7 @@
     <title>List of Employees</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="http://localhost:8080/SpringJpaApplication/js/script.js" defer></script>
 </head>
 
 <body>
@@ -63,11 +64,12 @@
 
         </ul>
 
-        <select id="pageSize" name="pageSize">
-            <option th:each="i : ${#numbers.sequence(10, 100, 15)}" th:value="${i}" th:text="${i}"
-                    th:selected="${i==pageSize}"
-            ></option>
-        </select>
+        <form id="pageSizeForm" th:action="@{/employee}">
+            <select id="pageSize" name="pageSize" onchange="pageSizeChange()">
+                <option th:each="i : ${#numbers.sequence(10, 100, 15)}" th:value="${i}" th:text="${i}"
+                        th:selected="${i==result.size}"></option>
+            </select>
+        </form>
     </nav>
 
     <table class="table" id="employee-Table">

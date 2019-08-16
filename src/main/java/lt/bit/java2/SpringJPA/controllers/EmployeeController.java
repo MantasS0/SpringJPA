@@ -161,7 +161,7 @@ class EmployeeController {
             ModelMap map) {
         Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize,sort));
 
-        map.addAttribute("pageSize", pageSize);
+//        map.addAttribute("pageSize", pageSize);
         map.addAttribute("result", result);
         Sort.Order order = sort.iterator().next();
         map.addAttribute("sorting", order);
