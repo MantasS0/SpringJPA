@@ -58,21 +58,37 @@
                 <input type="date" class="form-control" th:field="*{hireDate}" id="hireDate">
             </div>
         </div>
-        <div class="form-group row" th:if="!${#lists.isEmpty(employee.titles)}">
-            <label class="col-sm-2 col-form-label">Title list</label>
-            <div class="col-sm-10">
-                <ul th:each="t, itemStat : *{titles}">
-                    <div class="form-group row">
-                        <label for="title" class="col-sm-2 col-form-label">Title</label>
-                        <input type="text" class="form-control" id="title" th:field="*{titles[__${itemStat.index}__].title}">
-                        <label for="fromDate" class="col-sm-2 col-form-label">From:</label>
-                        <input type="date" class="form-control" id="fromDate" th:field="*{titles[__${itemStat.index}__].fromDate}">
-                        <label for="toDate" class="col-sm-2 col-form-label">To:</label>
-                        <input type="date" class="form-control" id="toDate" th:field="*{titles[__${itemStat.index}__].toDate}">
-                    </div>
-                </ul>
-            </div>
-        </div>
+
+        <table class="table" th:if="!${#lists.isEmpty(employee.titles)}">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Date from:</th>
+                <th>Date to:</th>
+                <th>
+                    <button type="submit" name="addTitle">Add Title</button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t, itemStat : *{titles}">
+                <td th:text="${itemStat.count}">1</td>
+                <td>
+                    <input type="text" class="form-control" id="title" th:field="*{titles[__${itemStat.index}__].title}">
+                </td>
+                <td>
+                    <input type="date" class="form-control" id="fromDate" th:field="*{titles[__${itemStat.index}__].fromDate}">
+                </td>
+                <td>
+                    <input type="date" class="form-control" id="toDate" th:field="*{titles[__${itemStat.index}__].toDate}">
+                </td>
+                <td>
+                    <button type="submit" name="removeTitle" th:value="${itemStat.index}">Remove Title</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         <input type="submit" class="btn btn-primary mb-2" value="Save changes">
         <input type="button" class="btn btn-primary mb-2" value="Back" onclick="history.back()">
     </form>

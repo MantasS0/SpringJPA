@@ -1,6 +1,7 @@
 package lt.bit.java2.SpringJPA.controllers;
 
 import lt.bit.java2.SpringJPA.entities.Employee;
+import lt.bit.java2.SpringJPA.entities.Title;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Optional;
@@ -43,20 +45,35 @@ class EmployeeController {
     }
 
     @GetMapping("/add-form")
-    public String addEmployeeForm(Employee employee){
+    public String addEmployeeForm(Employee employee) {
         return "employee-add";
     }
 
     @PostMapping("/add")
-    public String addEmployee(@Valid Employee employee, BindingResult result, ModelMap map){
-        if (result.hasErrors()){
+    public String addEmployee(@Valid Employee employee, BindingResult result, ModelMap map) {
+        if (result.hasErrors()) {
             return "employee-add";
         }
 
-        employee.getTitles().forEach( t -> t.setEmployee(employee));
+        employee.getTitles().forEach(t -> t.setEmployee(employee));
         employeeRepository.save(employee);
 
         return "redirect:/employee";
+    }
+
+    @RequestMapping(value = "/{id}/update", params = {"addTitle"})
+    public String addTitle(@PathVariable int id, Employee employee, BindingResult bindingResult) {
+        employee.getTitles().add(new Title());
+        return "employee-edit";
+    }
+
+    @RequestMapping(value = "/{id}/update", params = {"removeTitle"})
+    public String removeTitle(@PathVariable int id, Employee employee, BindingResult bindingResult, final HttpServletRequest req) {
+        final Integer titleIndex = Integer.valueOf(req.getParameter("removeTitle"));
+        if (employee.getTitles().contains(employee.getTitles().get(titleIndex))) {
+            employee.getTitles().remove(titleIndex.intValue());
+        }
+        return "employee-edit";
     }
 
 
@@ -140,7 +157,7 @@ class EmployeeController {
     public String deleteEmployee(@PathVariable("id") int id, ModelMap map) {
         try {
             Optional<Employee> employee = employeeRepository.findById(id);
-            if (employee.isPresent()){
+            if (employee.isPresent()) {
                 employeeRepository.delete(employee.get());
             }
         } catch (Exception e) {
@@ -157,11 +174,10 @@ class EmployeeController {
     public String getEmployeeSinglePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
             @RequestParam(name = "size", required = false, defaultValue = "10") int pageSize,
-            @SortDefault(sort="empNo",direction = Sort.Direction.ASC) Sort sort,
+            @SortDefault(sort = "empNo", direction = Sort.Direction.ASC) Sort sort,
             ModelMap map) {
-        Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize,sort));
+        Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
 
-//        map.addAttribute("pageSize", pageSize);
         map.addAttribute("result", result);
         Sort.Order order = sort.iterator().next();
         map.addAttribute("sorting", order);
