@@ -16,7 +16,7 @@ import java.util.List;
         }
 )
 @Data
-public class Employee {
+public class Employee{
 
     public static final String Graph_Titles = "graph.Employee.titles";
 

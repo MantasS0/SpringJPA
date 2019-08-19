@@ -170,6 +170,7 @@ class EmployeeController {
         return "redirect:/employee";
     }
 
+/*
     @GetMapping
     public String getEmployeeSinglePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
@@ -188,6 +189,60 @@ class EmployeeController {
 
         return "employee-list-page";
     }
+*/
+
+
+    @GetMapping
+    public String getEmployeeSinglePage(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int pageSize,
+            @SortDefault(sort = "empNo", direction = Sort.Direction.ASC) Sort sort,
+            @RequestParam(name = "criteria", required = false) String criteria,
+            ModelMap map) {
+
+        Optional<Page<Employee>> result = Optional.empty();
+
+        if (criteria == null || criteria.isEmpty() || criteria.isBlank()){
+            result = Optional.ofNullable(employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort)));
+//            return "redirect:/employee";
+        }else if (criteria.matches(".*\\d.*")) {
+            Integer empNo = Integer.parseInt(criteria.replaceAll("^\\D*?(-?\\d+).*$", "$1"));
+            if (empNo == 0) {
+                return "employee-error";
+            } else if (empNo < 0) {
+                empNo *= -1;
+            }
+            result = Optional.ofNullable(employeeRepository.findByEmpNo(empNo, (PageRequest.of(pageNumber - 1, pageSize, sort))));
+        } else if (criteria.trim().matches("^[\"'](\\w+\\s{1}\\w+)[\"']$")) {
+            String criteria2 = criteria.replaceAll("[\"']", "");
+            String[] crit = criteria2.trim().split("\\s+");
+            System.out.println(criteria + " -> " + criteria2 + " -> " + crit[0] + " + " + crit[1]);
+            result = Optional.ofNullable(employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[0], crit[1], (PageRequest.of(pageNumber - 1, pageSize, sort))));
+            if (result.isPresent()){
+                if (result.get().isEmpty()){
+                    result = Optional.ofNullable(employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[1], crit[0], (PageRequest.of(pageNumber - 1, pageSize, sort))));
+                }
+            }
+        } else {
+            System.out.println("reached one word search (else statement)");
+            String[] crit = criteria.trim().split("\\s+");
+            result = Optional.ofNullable(employeeRepository.findByFirstNameContainingOrLastNameContaining(crit[0], crit[0], (PageRequest.of(pageNumber - 1, pageSize, sort))));
+        }
+        if (result.isEmpty()) {
+            return "employee-error";
+        }
+        Page<Employee> resultFinal = result.get();
+        map.addAttribute("result", resultFinal);
+        Sort.Order order = sort.iterator().next();
+        map.addAttribute("sorting", order);
+        map.addAttribute("criteria", criteria);
+        HashMap<String, Integer> pageRange = getPaginationRange(pageNumber, resultFinal.getTotalPages());
+        map.addAttribute("rangeFrom", pageRange.get("from"));
+        map.addAttribute("rangeTo", pageRange.get("to"));
+
+        return "employee-list-page";
+    }
+
 
     private HashMap<String, Integer> getPaginationRange(int pageNumber, int pageCount) {
         HashMap<String, Integer> pageRange = new HashMap<>();

@@ -12,9 +12,10 @@
 <div class="container">
     <h1 class="text-center">List of Employees</h1>
 
-    <button class="button"><a class="text-dark" th:href="@{/employee/add-form}">Add New Employee</a></button>
 
-    <nav aria-label="Search results pages" class="d-md-flex flex-wrap justify-content-center">
+    <nav aria-label="Search results pages" class="d-md-flex justify-content-center">
+        <a class="btn btn-primary mr-2" th:href="@{/employee/add-form}">Add New Employee</a>
+
         <ul class="pagination"
             th:if="${result.totalPages > 1}">
 
@@ -23,7 +24,7 @@
                 <span class="page-link" th:if="${result.first}">← First</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=1, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">← First</a>
+                   th:href="@{/employee(size=${result.size}, page=1, sort=${sorting?.property} + '&#44;' + ${sorting?.direction}, criteria=${criteria})}">← First</a>
             </li>
 
             <li class="page-item"
@@ -31,7 +32,7 @@
                 <span class="page-link" th:if="${result.first}">«</span>
                 <a class="page-link"
                    th:if="!${result.first}"
-                   th:href="@{/employee(size=${result.size}, page=${result.number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">«</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction}, criteria=${criteria})}">«</a>
             </li>
 
             <li class="page-item"
@@ -42,7 +43,7 @@
                       th:text="${number}"></span>
                 <a class="page-link"
                    th:if="!${number == result.number + 1}"
-                   th:href="@{/employee(size=${result.size}, page=${number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}"
+                   th:href="@{/employee(size=${result.size}, page=${number}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction}, criteria=${criteria})}"
                    th:text="${number}"></a>
             </li>
 
@@ -51,7 +52,7 @@
                 <span class="page-link" th:if="${result.last}">»</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.number + 2}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">»</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.number + 2}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction}, criteria=${criteria})}">»</a>
             </li>
 
             <li class="page-item"
@@ -59,11 +60,20 @@
                 <span class="page-link" th:if="${result.last}">Last →</span>
                 <a class="page-link"
                    th:if="!${result.last}"
-                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">Last →</a>
+                   th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction}, criteria=${criteria})}">Last →</a>
             </li>
         </ul>
+
+        <form id="searchForm" th:action="@{/employee}" onsubmit="searchScript()">
+            <div class="d-inline-flex flex-row">
+                <input type="search" class="form-control p-2 ml-2" id="searchField" name="criteria" th:value="${criteria}" placeholder="Search...">
+                <input type="submit" value="Search" class="btn btn-primary ml-2 align-self-stretch">
+            </div>
+
+        </form>
+
         <form id="pageSizeForm" th:action="@{/employee}" th:with="options=${ {10,25,50,75,100} }">
-            <select id="pageSize" name="size" onchange="pageSizeChange()">
+            <select class="ml-2 custom-select" id="pageSize" name="size" onchange="pageSizeChange()">
                 <option th:each="i : ${options}" th:value="${i}" th:text="${i}"
                         th:selected="${i==result.size}" ></option>
             </select>
@@ -74,7 +84,7 @@
         <thead>
         <tr>
             <th>
-                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('empNo')?.ascending} ? 'empNo,desc' : 'empNo,asc'))}"
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('empNo')?.ascending} ? 'empNo,desc' : 'empNo,asc'), criteria=${criteria})}"
                    th:switch="${result?.sort?.getOrderFor('empNo')?.ascending}"
                    class="text-dark">
                     <span th:case="${false}">Emp No &#9650;</span>
@@ -83,7 +93,7 @@
                 </a>
             </th>
             <th>
-                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('firstName')?.ascending} ? 'firstName,desc' : 'firstName,asc'))}"
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('firstName')?.ascending} ? 'firstName,desc' : 'firstName,asc'), criteria=${criteria})}"
                    th:switch="${result?.sort?.getOrderFor('firstName')?.ascending}"
                    class="text-dark">
                     <span th:case="${false}">First Name &#9650;</span>
@@ -92,7 +102,7 @@
                 </a>
             </th>
             <th>
-                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('lastName')?.ascending} ? 'lastName,desc' : 'lastName,asc'))}"
+                <a th:href="@{/employee(size=${result.size}, page=${result.number + 1}, sort=(${result?.sort?.getOrderFor('lastName')?.ascending} ? 'lastName,desc' : 'lastName,asc'), criteria=${criteria})}"
                    th:switch="${result?.sort?.getOrderFor('lastName')?.ascending}"
                    class="text-dark">
                     <span th:case="${false}">Last Name &#9650;</span>

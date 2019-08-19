@@ -4,14 +4,10 @@ import lt.bit.java2.SpringJPA.entities.Employee;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -129,12 +125,14 @@ class EmployeeApi {
                 empNo *= -1;
             }
             result = Optional.ofNullable(employeeRepository.findByEmpNo(empNo, (PageRequest.of(pageNumber - 1, pageSize))));
-        } else if (criteria.matches("^[\"\']+$")){
+        } else if (criteria.trim().contains("%22")){ //criteria.trim().matches("^[\"\'%22]+$")
             //reikia padirbet cia nes neveikia kaip noretusi
-            String criteria2 = criteria.replaceAll("[\"\']", "");
-            String[] crit = criteria.trim().split("\\s+");
+            String criteria2 = criteria.replaceAll("%22", "");
+            String[] crit = criteria.trim().split(".*[\\h\\+]*.");  //"\\s+"
+            System.out.println(criteria + " -> " + criteria2 + " -> " + crit[0] + " + " + crit[1]);
             result = Optional.ofNullable(employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[0], crit[1], (PageRequest.of(pageNumber - 1, pageSize))));
         }else {
+            System.out.println("reached one word search (else statement)");
             String[] crit = criteria.trim().split("\\s+");
             result = Optional.ofNullable(employeeRepository.findByFirstNameContainingOrLastNameContaining(crit[0], crit[0], (PageRequest.of(pageNumber - 1, pageSize))));
         }
