@@ -80,5 +80,24 @@ Accept: application/json
 
 ###
 
+GET http://localhost:8080/api/employee/search?criteria=ant
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/employee/search?criteria=dfhf-10001fa asd156
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/employee/search?criteria="Antanas Birutis"
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/employee/search?criteria=ant bir
+Accept: application/json
+
+###
 
 

@@ -61,7 +61,6 @@
                    th:if="!${result.last}"
                    th:href="@{/employee(size=${result.size}, page=${result.totalPages}, sort=${sorting?.property} + '&#44;' + ${sorting?.direction})}">Last →</a>
             </li>
-<!--            ${#strings.toString(${sorting?.property},${sorting?.direction})}-->
         </ul>
         <form id="pageSizeForm" th:action="@{/employee}" th:with="options=${ {10,25,50,75,100} }">
             <select id="pageSize" name="size" onchange="pageSizeChange()">
