@@ -202,11 +202,11 @@ class EmployeeController {
 
         Optional<Page<Employee>> result = Optional.empty();
 
-        if (criteria == null || criteria.isEmpty() || criteria.isBlank()){
+
+        if (criteria == null || criteria.isEmpty()){
             result = Optional.ofNullable(employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort)));
-//            return "redirect:/employee";
         }else if (criteria.matches(".*\\d.*")) {
-            Integer empNo = Integer.parseInt(criteria.replaceAll("^\\D*?(-?\\d+).*$", "$1"));
+            int empNo = Integer.parseInt(criteria.replaceAll("^\\D*?(-?\\d+).*$", "$1"));
             if (empNo == 0) {
                 return "employee-error";
             } else if (empNo < 0) {
@@ -228,7 +228,7 @@ class EmployeeController {
             String[] crit = criteria.trim().split("\\s+");
             result = Optional.ofNullable(employeeRepository.findByFirstNameContainingOrLastNameContaining(crit[0], crit[0], (PageRequest.of(pageNumber - 1, pageSize, sort))));
         }
-        if (result.isEmpty()) {
+        if (!result.isPresent()) {
             return "employee-error";
         }
         Page<Employee> resultFinal = result.get();
