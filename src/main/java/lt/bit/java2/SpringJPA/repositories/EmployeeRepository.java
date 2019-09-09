@@ -17,4 +17,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>, Qu
 
     @Query
     Page<Employee> findByEmpNo(Integer empNo, Pageable pageable);
+
 }

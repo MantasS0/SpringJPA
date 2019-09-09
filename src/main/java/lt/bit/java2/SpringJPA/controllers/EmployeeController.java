@@ -4,6 +4,7 @@ import lt.bit.java2.SpringJPA.entities.Employee;
 import lt.bit.java2.SpringJPA.entities.Title;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
 import lt.bit.java2.SpringJPA.utility.PaginationRange;
+import lt.bit.java2.SpringJPA.utility.Search;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +25,11 @@ import java.util.Optional;
 class EmployeeController {
 
     final private EmployeeRepository employeeRepository;
+    final private Search search;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
+    public EmployeeController(EmployeeRepository employeeRepository, Search search) {
         this.employeeRepository = employeeRepository;
+        this.search = search;
     }
 
 
@@ -171,28 +174,6 @@ class EmployeeController {
         return "redirect:/employee";
     }
 
-/*
-    @GetMapping
-    public String getEmployeeSinglePage(
-            @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int pageSize,
-            @SortDefault(sort = "empNo", direction = Sort.Direction.ASC) Sort sort,
-            ModelMap map) {
-        Page<Employee> result = employeeRepository.findAll(PageRequest.of(pageNumber - 1, pageSize, sort));
-
-        map.addAttribute("result", result);
-        Sort.Order order = sort.iterator().next();
-        map.addAttribute("sorting", order);
-
-        HashMap<String, Integer> pageRange = getPaginationRange(pageNumber, result.getTotalPages());
-        map.addAttribute("rangeFrom", pageRange.get("from"));
-        map.addAttribute("rangeTo", pageRange.get("to"));
-
-        return "employee-list-page";
-    }
-*/
-
-
     @GetMapping
     public String getEmployeeSinglePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
@@ -203,17 +184,12 @@ class EmployeeController {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
 
-//        QEmployee qEmployee = QEmployee.employee;
-//        BooleanExpression employeeIsMantas = qEmployee.firstName.eq("Mantas");
-//        Page<Employee> employeePage = employeeRepository.findAll(employeeIsMantas, pageable);
-
-        Page<Employee> result = Page.empty();
+        Page<Employee> result;
 
         if (criteria == null || criteria.isEmpty()){
-//            result = employeeRepository.findAll(employeeIsMantas, pageable);
             result = employeeRepository.findAll(pageable);
         }else {
-            result = doSearch(criteria, pageable);
+            result = search.doSearch(criteria, pageable);
         }
 
         map.addAttribute("result", result);
@@ -226,34 +202,6 @@ class EmployeeController {
         map.addAttribute("rangeTo", paginationRange.getRangeTo());
 
         return "employee-list-page";
-    }
-
-    private Page<Employee> doSearch(String criteria, Pageable pageable){
-
-        Page<Employee> result = Page.empty();
-
-        if (criteria.matches(".*\\d.*")) {
-            int empNo = Integer.parseInt(criteria.replaceAll("^\\D*?(-?\\d+).*$", "$1"));
-            if (empNo == 0) {
-                return result;
-            } else if (empNo < 0) {
-                empNo *= -1;
-            }
-            result = employeeRepository.findByEmpNo(empNo, pageable);
-        } else if (criteria.trim().matches("^[\"'](\\w+\\s{1}\\w+)[\"']$")) {
-            String criteria2 = criteria.replaceAll("[\"']", "");
-            String[] crit = criteria2.trim().split("\\s+");
-            System.out.println(criteria + " -> " + criteria2 + " -> " + crit[0] + " + " + crit[1]);
-            result = employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[0], crit[1], pageable);
-            if (result.isEmpty()){
-                result = employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[1], crit[0], pageable);
-            }
-        } else {
-            System.out.println("reached one word search (else statement)");
-            String[] crit = criteria.trim().split("\\s+");
-            result = employeeRepository.findByFirstNameContainingOrLastNameContaining(crit[0], crit[0], pageable);
-        }
-        return result;
     }
 
 }

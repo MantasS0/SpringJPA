@@ -2,8 +2,6 @@ package lt.bit.java2.SpringJPA.controllers;
 
 import lt.bit.java2.SpringJPA.entities.Employee;
 import lt.bit.java2.SpringJPA.repositories.EmployeeRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,20 +66,6 @@ class EmployeeApi {
                         .noneMatch(t -> t.getTitle().equals(title.getTitle()) &&
                                 t.getFromDate().equals(title.getFromDate()))
         );
-/*
-        Iterator<Title> it = empOrg.getTitles().iterator();
-        while (it.hasNext()) {
-            Title title = it.next();
-
-            boolean exists = employee.getTitles().stream()
-                    .anyMatch(t -> t.getTitle().equals(title.getTitle()) &&
-                            t.getFromDate().equals(title.getFromDate()));
-            //
-            if (!exists) {
-                it.remove();
-            }
-        }
-*/
 
         // 2. modify old one
         empOrg.getTitles().forEach(title -> {
@@ -106,41 +90,6 @@ class EmployeeApi {
 
         return ResponseEntity.ok(employeeRepository.save(emp.get()));
     }
-
-    @GetMapping("/search")
-    public ResponseEntity<Page<Employee>> getEmployeeSinglePage(
-            @RequestParam(name = "criteria", required = false, defaultValue = "") String criteria) {
-        int pageNumber = 1;
-        int pageSize = 5;
-
-        Optional<Page<Employee>> result = Optional.empty();
-
-
-        if (criteria.matches(".*\\d.*")){
-            Integer empNo = Integer.parseInt(criteria.replaceAll("^\\D*?(-?\\d+).*$", "$1"));
-            if (empNo==0){
-                return ResponseEntity.notFound().build();
-            }
-            else if (empNo<0){
-                empNo *= -1;
-            }
-            result = Optional.ofNullable(employeeRepository.findByEmpNo(empNo, (PageRequest.of(pageNumber - 1, pageSize))));
-        } else if (criteria.trim().contains("%22")){ //criteria.trim().matches("^[\"\'%22]+$")
-            //reikia padirbet cia nes neveikia kaip noretusi
-            String criteria2 = criteria.replaceAll("%22", "");
-            String[] crit = criteria.trim().split(".*[\\h\\+]*.");  //"\\s+"
-            System.out.println(criteria + " -> " + criteria2 + " -> " + crit[0] + " + " + crit[1]);
-            result = Optional.ofNullable(employeeRepository.findByFirstNameContainingAndLastNameContaining(crit[0], crit[1], (PageRequest.of(pageNumber - 1, pageSize))));
-        }else {
-            System.out.println("reached one word search (else statement)");
-            String[] crit = criteria.trim().split("\\s+");
-            result = Optional.ofNullable(employeeRepository.findByFirstNameContainingOrLastNameContaining(crit[0], crit[0], (PageRequest.of(pageNumber - 1, pageSize))));
-        }
-
-
-        return result.isPresent() ? ResponseEntity.ok(result.get()) : ResponseEntity.notFound().build();
-    }
-
 
 }
 
