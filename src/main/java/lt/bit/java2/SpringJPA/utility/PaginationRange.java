@@ -29,6 +29,27 @@ public class PaginationRange {
         }
     }
 
+    public PaginationRange(int pageNumber, int pageCount, int buttonCount) {
+
+        /*Current BUG:
+        * If buttonCount is even number the button count jumps +1 (to an odd number)
+        *  when selecting not first and not last pages. Could be because of thymeleaf code in employee-list-page.html
+        * If button count is odd number everything works as intended.*/
+
+        int halfButtonCount = (int) Math.floor(buttonCount / 2);
+
+            if (pageNumber <= halfButtonCount) {
+                this.rangeFrom = 1;
+                this.rangeTo = buttonCount;
+            } else if (pageNumber > pageCount - halfButtonCount) {
+                this.rangeFrom = pageCount - (buttonCount - 1);
+                this.rangeTo = pageCount;
+            }else {
+                this.rangeFrom = pageNumber - halfButtonCount;
+                this.rangeTo = pageNumber + halfButtonCount;
+            }
+    }
+
     public Integer getRangeFrom() {
         return rangeFrom;
     }

@@ -197,7 +197,7 @@ class EmployeeController {
         map.addAttribute("sorting", order);
         map.addAttribute("criteria", criteria);
 
-        PaginationRange paginationRange = new PaginationRange(pageNumber, result.getTotalPages());
+        PaginationRange paginationRange = new PaginationRange(pageNumber, result.getTotalPages(),5);
         map.addAttribute("rangeFrom", paginationRange.getRangeFrom());
         map.addAttribute("rangeTo", paginationRange.getRangeTo());
 
